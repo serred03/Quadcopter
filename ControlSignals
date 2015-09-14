@@ -1,1 +1,8 @@
-There is a decoder in the final stage of the reciever, that decoder connects directly to the servos or motors to control. 
+RC Transmitters/recievers use radio frequencies in the 2.4Ghz or 35Mhz with FM modulation to send information from its 4-9 channels (each channel can control a servo or other electric actuator).
+
+There is a decoder in the final stage of the reciever, that decoder connects directly to the servos or motors to control. It typically consist of various 3 pin headers (2 pins for voltge and one for signal) each header control 1 channel. 
+
+Some info is found in this web page: https://www.sparkfun.com/tutorials/348
+and also in this next wab page: http://adamone.rchomepage.com/guide1.htm
+
+The signal that comes out of the RC reciever is a PWM usually in the 1000 to 2000ms pulse range.
