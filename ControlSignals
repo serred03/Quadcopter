@@ -6,3 +6,6 @@ Some info is found in this web page: https://www.sparkfun.com/tutorials/348
 and also in this next wab page: http://adamone.rchomepage.com/guide1.htm
 
 The signal that comes out of the RC reciever is a PWM usually in the 1000 to 2000ms pulse range.
+
+It is necesary to calibrate the ESC to the range of PWM or throttle that you arew going to be using. 
+
