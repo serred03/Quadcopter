@@ -1,0 +1,41 @@
+These are the values read by the kk2 and the values that go into the function 
+Servo.write() in the arduino.
+
+Aileron pin 3:
+	min(kk2) = -171
+	max(kk2) = 169
+	zero(ard) = 93
+        min(ard) = 25
+	max(ard) = 160
+	range(ard) = 135
+	map arduino to 130 max to get 93
+	map arduino to 56 min to get -93
+Elevator pin 5:
+	min(kk2) = -171
+	max(kk2) = 169
+	zero(ard) = 93
+	min(ard) = 25
+	max(ard) =160
+	range(ard) = 135
+	map arduino to 130 max to get 93
+	map arduino to 56 min to get -93
+Throttle pin 6:
+	min(kk2) = 0 (idle)
+	max(kk2) = 157
+	full(kk2) = 90 (full)
+	zero(ard) = 59 
+	min(ard)= 59
+	max(ard) = 179
+	full(ard) = 128
+	map arduino to 128 max to get 90
+	map arduino to 59 to get 0. 
+Rudder pin 9: 
+	min(kk2) = -171 (rigt)
+	max(kk2) = 169 (left)
+	zero(ard) = 93
+	min(ard) = 25
+	max(ard) = 160
+	range(ard) = 135
+	map arduino to 130 max to get 93. 
+	map arduino to 56 min to get 93.
+
