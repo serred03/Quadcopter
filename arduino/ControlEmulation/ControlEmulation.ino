@@ -92,8 +92,32 @@ void _parse_command(String com)
   }
   else
   {
-    part1 = com;
-    Serial.println("Not doing anything");
+    int length = com.length(); 
+    
+    if(length == 4)
+    {
+      part1 = com.substring(0,3);
+      if(part1.equals("ARM"))
+      {
+        Serial.println("Arming"); 
+        throttle_channel.write(_min_t); 
+        rudder_value = 93; 
+      
+        for(int i=1; i <= 37; i++)
+        {
+          rudder_value-=1;
+          rudder_channel.write(rudder_value); 
+          delay(5); 
+        }
+      
+        delay(2000);
+      
+      }else _print_error(0);
+    } else
+    {
+      _print_error(0);
+    }
+    
   }
 }
 
