@@ -174,6 +174,45 @@ void _parse_command(String com)
         rudder_channel.write(rudder_value);
         
       }      
+      else if(part1.equals("CAL"))
+      {
+        //To calibrate turn of power on kk2 board
+        //Send command CAL via serial 
+        //Quickly connect power back on 
+        //Press button 1 and 4 on kk2 board
+        //The porgram should calibrate 
+        //Indicated by all fo the ESC on
+        Serial.println("Calibrating");
+        
+        delay(3000);
+        
+        aileron_value = 93;
+        elevator_value = 93; 
+        throttle_value = _max_t;
+        rudder_value = 93;
+        aux_value = 93;
+        
+        aileron_channel.write(aileron_value);
+        elevator_channel.write(elevator_value); 
+        throttle_channel.write(_max_t);
+        rudder_channel.write(rudder_value);
+        aux_channel.write(aux_value);
+        
+        
+        Serial.print("max t = ");
+        Serial.println(throttle_value);
+        
+        for(int i=1; i<=69; i++)
+        {
+          throttle_value -=1;
+          throttle_channel.write(throttle_value);
+          delay(_arm_delay);
+        }
+ 
+        delay(2000);
+        Serial.print("min t = ");
+        Serial.println(throttle_value);
+      }
       else {_print_error(0);}
     } else
     {
