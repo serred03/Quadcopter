@@ -19,10 +19,11 @@ const int _max = 130; //max on ail, ele, rudder.
 const int _min = 56; //min on ail,ele,rudder
 const int _max_t = 128;//max on throttle
 const int _min_t = 59; //min on throttle
+const int _arm_delay = 25;//to simulate mechanical delay
 
 int aileron_value = 93; //93 is the middle value.
 int elevator_value = 93; 
-int throttle_value = 59; //59 is idle and 128 is full
+int throttle_value = 96; //59 is idle and 128 is full
 int rudder_value = 93; 
 int aux_value = 93;
 int _pwm_value = 0; 
@@ -35,6 +36,13 @@ void setup()
   throttle_channel.attach(6);
   rudder_channel.attach(9);
   aux_channel.attach(10);
+  
+  aileron_channel.write(aileron_value); 
+  elevator_channel.write(elevator_value);
+  throttle_channel.write(throttle_value);
+  rudder_channel.write(rudder_value); 
+  aux_channel.write(aux_value);
+  
   Serial.begin(9600); 
 }
 
@@ -99,20 +107,74 @@ void _parse_command(String com)
       part1 = com.substring(0,3);
       if(part1.equals("ARM"))
       {
+
         Serial.println("Arming"); 
-        throttle_channel.write(_min_t); 
-        rudder_value = 93; 
+        
+        rudder_value = 93;   //make sure rudder is at middle pos
+        throttle_value = 96; //make sure throttle is at middle pos
+        aux_value = 130;     //value to turn on aux channel.
+        
+        throttle_channel.write(throttle_value); //set values 
+        rudder_channel.write(rudder_value);     //to middle pos
+        aux_channel.write(aux_value);           //turn on aux.
       
         for(int i=1; i <= 37; i++)
         {
-          rudder_value-=1;
+          //decrement values 1 by 1 to throttle min and rudder right
+          //to ARM
+          rudder_value-=1;   
+          throttle_value -=1;
           rudder_channel.write(rudder_value); 
-          delay(5); 
+          throttle_channel.write(throttle_value);
+          delay(_arm_delay); //delay to simulate mechanical switching
         }
+        
+        delay(1000);
+        
+        //default values
+        rudder_value = 93;
+        throttle_value = 96; 
+        
+        //reset to default values leaving aux on
+        throttle_channel.write(throttle_value);
+        rudder_channel.write(rudder_value);
+        
+      } 
+      else if(part1.equals("DRM"))
+      {
+        Serial.println("Disarming"); 
+        
+        rudder_value = 93;   //make sure the sticks are at middle pos
+        throttle_value = 96; //make sure throttle is at middle pos
+        aux_value = 130;     //value to turn on aux.
+        
+        throttle_channel.write(throttle_value); //set channels to
+        rudder_channel.write(rudder_value);     //default values
+        aux_channel.write(aux_value); //turn on aux channel.
       
+        for(int i=1; i <= 37; i++)
+        {
+          //simulate stick travel by decrem values
+          //in steps of 1 to throttle 0 and rudder left.
+          rudder_value +=1;
+          throttle_value -=1;
+          rudder_channel.write(rudder_value); 
+          throttle_channel.write(throttle_value);
+          delay(_arm_delay); 
+        }
+        
         delay(2000);
-      
-      }else _print_error(0);
+        
+        //default values
+        rudder_value = 93;
+        throttle_value = 96; 
+        
+        //reset to default values
+        throttle_channel.write(throttle_value);
+        rudder_channel.write(rudder_value);
+        
+      }      
+      else {_print_error(0);}
     } else
     {
       _print_error(0);
