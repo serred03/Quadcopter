@@ -113,23 +113,23 @@ void _parse_command(String com)
         rudder_value = 93;   //make sure rudder is at middle pos
         throttle_value = 96; //make sure throttle is at middle pos
         aux_value = 130;     //value to turn on aux channel.
-        
-        throttle_channel.write(throttle_value); //set values 
-        rudder_channel.write(rudder_value);     //to middle pos
+
         aux_channel.write(aux_value);           //turn on aux.
+        rudder_channel.write(rudder_value);     //Set values
+        throttle_channel.write(throttle_value); //to middle pos
       
-        for(int i=1; i <= 37; i++)
+        for(int i=1; i <= 38; i++)
         {
           //decrement values 1 by 1 to throttle min and rudder right
           //to ARM
-          rudder_value-=1;   
-          throttle_value -=1;
+          rudder_value-=1;  
+          throttle_value -=1; 
           rudder_channel.write(rudder_value); 
           throttle_channel.write(throttle_value);
           delay(_arm_delay); //delay to simulate mechanical switching
         }
         
-        delay(1000);
+        delay(2000);
         
         //default values
         rudder_value = 93;
@@ -152,7 +152,7 @@ void _parse_command(String com)
         rudder_channel.write(rudder_value);     //default values
         aux_channel.write(aux_value); //turn on aux channel.
       
-        for(int i=1; i <= 37; i++)
+        for(int i=1; i <= 38; i++)
         {
           //simulate stick travel by decrem values
           //in steps of 1 to throttle 0 and rudder left.
