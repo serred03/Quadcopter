@@ -1,3 +1,4 @@
+#!/usr/bin/python
 #Program to comunicate between raspberry pi and arduino 
 #using serial connection over the pins 0(RX) and 1(TX)
 #on arduino and pins 14(TX) and 15(RX) on raspberry pi. 
@@ -7,28 +8,41 @@
 #
 #Created by serred 10/14/15
 
+import serial, sys
 
-import serial 
+args = sys.argv
 
 port = serial.Serial("/dev/ttyACM0",baudrate=9600,timeout=3.0)
-port.write("TH_100\r")
-a = port.readline()
-print(a)
 
-port.write("RD_100\r")
-a = port.readline()
-print(a)
+pwm = 0
+if len(args) == 3:
+    pwm = args[2]
 
-port.write("EL_100\r")
-a = port.readline()
-print(a)
+if len(args) < 2 or len(args) > 3:
+    print "Invalid number of arguments"
+elif args[1] == 'TH':
+    com = "TH_" + str(pwm) + "\r"
+    port.write(com)
+elif args[1] == 'AX':
+    com = "AX_" + str(pwm) + "\r"
+    port.write(com)
+elif args[1] == 'AI':
+    com = "AI_" + str(pwm) + "\r"
+    port.write(com)
+elif args[1] == 'EL':
+    com = "EL_" + str(pwm) + "\r"
+    port.write(com)
+elif args[1] == 'ARM':
+    com = "ARM\r"
+    port.write(com)
+elif args[1] == 'DRM':
+    com = "DRM\r"
+    port.write(com)
+else:
+    print "Invalid command"
+    sys.exit() 
+inLine = port.readline()
 
-port.write("AI_200\r")
-a = port.readline()
-print(a)
+print inLine
 
-port.write("AX_200\r")
-a = port.readline()
-print(a)
-
-
+    
