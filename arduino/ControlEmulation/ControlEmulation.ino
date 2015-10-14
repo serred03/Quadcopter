@@ -58,7 +58,7 @@ void _read_command()
   {
     char c = Serial.read(); 
     
-    if(c =='\n')
+    if(int(c) ==13) //for arduino SM use c=='\n'
     {
       _parse_command(command);
       command = "";
@@ -102,9 +102,9 @@ void _parse_command(String com)
   {
     int length = com.length(); 
     
-    if(length == 4)
+    if(length == 3) //use ==4 for arduino
     {
-      part1 = com.substring(0,3);
+      part1 = com; //use com.substring(0,3) for arduino
       if(part1.equals("ARM"))
       {
 
