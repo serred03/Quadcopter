@@ -93,10 +93,7 @@ void _parse_command(String com)
     }    
     
      _write_to_channel(part1,_pwm_value);
-    
-    Serial.print(part1);
-    Serial.print(": ");
-    Serial.println(_pwm_value);   
+   
   }
   else
   {
@@ -235,8 +232,12 @@ void _write_to_channel(String channel, int pwm)
   else
   {
     _print_error(0); //Error 0 is incorrect command
+    return;
   }
   
+  Serial.print(channel);
+  Serial.print("_");
+  Serial.println(pwm);
 }
 
 void _print_error(int e)
