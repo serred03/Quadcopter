@@ -193,6 +193,19 @@ void _parse_command(String com)
         Serial.print("min t = ");
         Serial.println(throttle_value);
       }
+      else if(part1.equals("GET"))
+      {
+        Serial.print("AI_");
+        Serial.println(aileron_value);
+        Serial.print("EL_");
+        Serial.println(elevator_value); 
+        Serial.print("TH_");
+        Serial.println(throttle_value);
+        Serial.print("RD_");
+        Serial.println(rudder_value); 
+        Serial.print("AX_");
+        Serial.println(aux_value);
+      }
       else {_print_error(0);}
     } else
     {
