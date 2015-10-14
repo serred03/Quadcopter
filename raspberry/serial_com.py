@@ -32,6 +32,9 @@ elif args[1] == 'AI':
 elif args[1] == 'EL':
     com = "EL_" + str(pwm) + "\r"
     port.write(com)
+elif args[1] == 'RD':
+    com = "RD_" + str(pwm) + "\r"
+    port.write(com)
 elif args[1] == 'ARM':
     com = "ARM\r"
     port.write(com)
