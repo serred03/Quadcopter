@@ -12,7 +12,14 @@ import serial, sys
 
 args = sys.argv
 
-port = serial.Serial("/dev/ttyACM0",baudrate=9600,timeout=3.0)
+if len(args) > 1 and len(args) < 3:
+    device = args[1]
+    device = "/dev/"+ device 
+    print device
+    port = serial.Serial(device,baudrate=9600,timeout=3.0)
+else:
+    port = serial.Serial("/dev/ttyACM0",baudrate=9600,timeout=3.0)
+
 
 
 
