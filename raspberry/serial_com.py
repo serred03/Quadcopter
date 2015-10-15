@@ -14,38 +14,22 @@ args = sys.argv
 
 port = serial.Serial("/dev/ttyACM0",baudrate=9600,timeout=3.0)
 
-pwm = 0
-if len(args) == 3:
-    pwm = args[2]
 
-if len(args) < 2 or len(args) > 3:
-    print "Invalid number of arguments"
-elif args[1] == 'TH':
-    com = "TH_" + str(pwm) + "\r"
-    port.write(com)
-elif args[1] == 'AX':
-    com = "AX_" + str(pwm) + "\r"
-    port.write(com)
-elif args[1] == 'AI':
-    com = "AI_" + str(pwm) + "\r"
-    port.write(com)
-elif args[1] == 'EL':
-    com = "EL_" + str(pwm) + "\r"
-    port.write(com)
-elif args[1] == 'RD':
-    com = "RD_" + str(pwm) + "\r"
-    port.write(com)
-elif args[1] == 'ARM':
-    com = "ARM\r"
-    port.write(com)
-elif args[1] == 'DRM':
-    com = "DRM\r"
-    port.write(com)
-else:
-    print "Invalid command"
-    sys.exit() 
-inLine = port.readline()
 
-print inLine
+print 'Enter your commands below. \r\nInsert "exit" to leave application'
+
+commands = 1
+
+while 1:
+    commands = raw_input(">> ")
+    comm_list = commands.split()
+
+    if commands == 'exit':
+        port.close()
+        exit()
+    else:
+        for com in comm_list:
+            port.write(com + '\r')
+            print port.readline()
 
     
