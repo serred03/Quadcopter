@@ -12,23 +12,34 @@ import serial, sys
 
 args = sys.argv
 
+UDP_PORT = 5005
+UDP_IP = "192.168.1.20"
+
+port = serial.Serial("/dev/ttyAMA0",baudrate=9600,timeout=3.0)
+
+
 if len(args) > 1 and len(args) < 3:
-    device = args[1]
-    device = "/dev/"+ device 
-    print device
-    port = serial.Serial(device,baudrate=9600,timeout=3.0)
+    mode = args[1]
+    if mode == "wifi":
+        UDP_IP = "192.168.1.20"
+    elif mode == "adhoc":
+        UDP_IP = "10.0.0.200"
+    else:
+        print mode, " is an invalid mode."
+        exit()
 else:
-    port = serial.Serial("/dev/ttyACM0",baudrate=9600,timeout=3.0)
+    UDP_IP = "192.168.1.20"
 
+sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 
-
+sock.bind((UDP_IP,UDP_PORT))
 
 print 'Enter your commands below. \r\nInsert "exit" to leave application'
 
 commands = 1
 
 while 1:
-    commands = raw_input(">> ")
+    commands,addr = sock.recvfrom(1024)
     comm_list = commands.split()
 
     if commands == 'exit':
@@ -38,5 +49,3 @@ while 1:
         for com in comm_list:
             port.write(com + '\r')
             print port.readline()
-
-    
