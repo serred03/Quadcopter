@@ -11,6 +11,8 @@ print "Enter command to send, and 'exit' to terminate program"
 while 1:
     command = raw_input(">>")
     sock.sendto(command,(UDP_IP,UDP_PORT))
+    reply = sock.recvfrom(1024)
+    print reply[0]
     if command == "exit":
         exit()
     

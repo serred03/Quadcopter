@@ -8,7 +8,7 @@
 #
 #Created by serred 10/14/15
 
-import serial, sys
+import serial, sys, socket
 
 args = sys.argv
 
@@ -34,8 +34,6 @@ sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 
 sock.bind((UDP_IP,UDP_PORT))
 
-print 'Enter your commands below. \r\nInsert "exit" to leave application'
-
 commands = 1
 
 while 1:
@@ -47,5 +45,7 @@ while 1:
         exit()
     else:
         for com in comm_list:
+	    print com + '\r'
             port.write(com + '\r')
-            print port.readline()
+            line = port.readline()
+	    sock.sendto(line,addr)
