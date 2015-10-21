@@ -31,10 +31,10 @@ String command;
 
 void setup()
 {
-  aileron_channel.attach(3);
-  elevator_channel.attach(5);
-  throttle_channel.attach(6);
-  rudder_channel.attach(9);
+  aileron_channel.attach(9); 
+  elevator_channel.attach(6; 
+  throttle_channel.attach(5);
+  rudder_channel.attach(3);
   aux_channel.attach(10);
   
   aileron_channel.write(aileron_value); 
