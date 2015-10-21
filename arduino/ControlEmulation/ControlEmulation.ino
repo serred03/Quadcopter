@@ -32,7 +32,7 @@ String command;
 void setup()
 {
   aileron_channel.attach(9); 
-  elevator_channel.attach(6; 
+  elevator_channel.attach(6); 
   throttle_channel.attach(5);
   rudder_channel.attach(3);
   aux_channel.attach(10);
