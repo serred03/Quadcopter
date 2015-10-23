@@ -26,7 +26,11 @@ int elevator_value = 93;
 int throttle_value = 96; //59 is idle and 128 is full
 int rudder_value = 93; 
 int aux_value = 93;
-int _pwm_value = 0; 
+int _pwm_value = 0;
+
+unsigned long elapsed_time = 0; //Variables to keep track of last 
+unsigned long last_update = 0; 
+
 String command;
 
 void setup()
@@ -49,26 +53,42 @@ void setup()
 void loop()
 {
   _read_command();
+  
+  if(elapsed_time > 3000)
+  {
+    Serial.print("No signal for ");
+    Serial.println(elapsed_time);
+  }
 }
 
 
 void _read_command()
 {
-  while(Serial.available())
+  boolean in = Serial.available();
+  if(in)
   {
-    char c = Serial.read(); 
-    
-    if(int(c) ==13) //for arduino SM use c=='\n'
+    last_update = millis();
+    while(Serial.available())
     {
-      _parse_command(command);
-      command = "";
+      char c = Serial.read(); 
+      
+      if(int(c) ==13) //for arduino SM use c=='\n'
+      {
+        _parse_command(command);
+        command = "";
+      }
+      else
+      {
+        command += c;
+      }
     }
-    else
-    {
-      command += c;
-    }
-  }  
+  }
+  else
+  {
+    elapsed_time = millis() - last_update; 
+  }
 }
+
 void _parse_command(String com)
 {
   String part1; 
@@ -196,22 +216,24 @@ void _parse_command(String com)
       else if(part1.equals("GET"))
       {
         Serial.print("AI_");
-        Serial.println(aileron_value);
-        Serial.print("EL_");
-        Serial.println(elevator_value); 
-        Serial.print("TH_");
-        Serial.println(throttle_value);
-        Serial.print("RD_");
-        Serial.println(rudder_value); 
-        Serial.print("AX_");
+        Serial.print(aileron_value);
+        Serial.print(" EL_");
+        Serial.print(elevator_value); 
+        Serial.print(" TH_");
+        Serial.print(throttle_value);
+        Serial.print(" RD_");
+        Serial.print(rudder_value); 
+        Serial.print(" AX_");
         Serial.println(aux_value);
+      }
+      else if(part1.equals("SGN"))
+      {
       }
       else {_print_error(0);}
     } else
     {
       _print_error(0);
-    }
-    
+    }   
   }
 }
 
