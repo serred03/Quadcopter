@@ -21,8 +21,15 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
     private TextView ElevatorTextView;
 
     //Values to be sent to quadcopter
-    int TH;
-    int RD;
+    int TH_value;
+    int RD_value;
+    int EL_value;
+    int AI_value;
+
+    //constants for mapping control values
+    int limits = 80; // represents +/-80 on posible values of orientation
+    int arduino_range = 74; //range of orientation values on arduino
+    int arduino_min = 56;   //minimum value on arduino
 
     //Orientation sensor initialization
     private SensorManager mSensorManager;
@@ -43,8 +50,8 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 //On progress update TH value.
-                TH = mapThrottleValue(i);
-                String th_string = "TH: " + Integer.toString(TH);
+                TH_value = mapThrottleValue(i);
+                String th_string = "TH: " + Integer.toString(TH_value);
                 ThrottleTextView.setText(th_string);
 
             }
@@ -65,8 +72,8 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 //On progress update RD value.
-                RD = mapThrottleValue(i);
-                String rd_string = "RD: " + Integer.toString(RD);
+                RD_value = mapControlValues(i,true);
+                String rd_string = "RD: " + Integer.toString(RD_value);
                 RudderTextView.setText(rd_string);
 
             }
@@ -138,9 +145,7 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
 
     float [] mGravity;
     float [] mGeomagnetic;
-    Float azimut;
-    Float elevator_value;
-    Float aileron_value;
+
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -155,16 +160,20 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
             if (success) {
                 float orientation[] = new float[3];
                 SensorManager.getOrientation(R, orientation);
-                azimut = orientation[0];
-                elevator_value= orientation[1]; // orientation contains: azimut, pitch and roll
-                aileron_value = orientation[2]; //aileron = roll, elevator = pitch
 
+                //aileron range 0.5(left) : -0.5(Right)
+                //elevator range 0.7(Front) : -0.7(Back)
+                float aileron_value= orientation[1]; // orientation contains: azimut, pitch and roll
+                float elevator_value = orientation[2]; //aileron = roll, elevator = pitch
 
-                String ai = "AI: " + Float.toString(aileron_value);
-                String el = "EL: " + Float.toString(elevator_value);
+                AI_value = mapControlValues(aileron_value, false);
+                EL_value = mapControlValues(elevator_value, false);
 
-                AileronTextView.setText(ai);
-                ElevatorTextView.setText(el);
+                String AI_text = "AI: " + Integer.toString(AI_value);
+                String EL_text = "EL: " + Integer.toString(EL_value);
+
+                AileronTextView.setText(AI_text);
+                ElevatorTextView.setText(EL_text);
             }
 
         }
@@ -175,4 +184,32 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
         return  v * 72/100+56;
     }
 
+    public int mapControlValues(float v, boolean isRudder) {
+
+        /*Function converts values from orientation sensors into
+        * values that can be processed by the arduino.
+        * */
+
+        if(isRudder){
+
+            float mapped_value = (v* arduino_range)/(100) + arduino_min;
+
+            return Math.round(mapped_value);
+        }
+        else{
+
+            v *=100;
+
+            if(v < (limits*-1)) {
+                v = -80;
+            } else if (v > limits) {
+                v = 80;
+            }
+
+            float mapped_value = ((v+limits)*arduino_range)/(2*limits) + arduino_min;
+
+            return Math.round(mapped_value);
+        }
+
+    }
 }
