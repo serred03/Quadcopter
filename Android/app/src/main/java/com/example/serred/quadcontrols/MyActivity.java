@@ -19,6 +19,7 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
     private TextView RudderTextView;
     private TextView AileronTextView;
     private TextView ElevatorTextView;
+    private UDP_Client client;
 
     //Values to be sent to quadcopter
     int TH_value;
@@ -125,6 +126,7 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        client = new UDP_Client();
     }
 
     @Override
@@ -170,6 +172,8 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
                 EL_value = mapControlValues(elevator_value, false);
 
                 String AI_text = "AI: " + Integer.toString(AI_value);
+                client.Message = AI_text;
+                client.SendData();
                 String EL_text = "EL: " + Integer.toString(EL_value);
 
                 AileronTextView.setText(AI_text);
