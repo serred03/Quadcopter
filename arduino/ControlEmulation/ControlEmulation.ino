@@ -16,9 +16,9 @@ Servo rudder_channel;
 Servo aux_channel;
 
 const int _max = 130; //max on ail, ele, rudder.
-const int _min = 56; //min on ail,ele,rudder
+const int _min = 55; //min on ail,ele,rudder
 const int _max_t = 128;//max on throttle
-const int _min_t = 59; //min on throttle
+const int _min_t = 58; //min on throttle
 const int _arm_delay = 25;//to simulate mechanical delay
 
 int aileron_value = 93; //93 is the middle value.
@@ -56,8 +56,6 @@ void loop()
   
   if(elapsed_time > 3000)
   {
-    Serial.print("No signal for ");
-    Serial.println(elapsed_time);
   }
 }
 
