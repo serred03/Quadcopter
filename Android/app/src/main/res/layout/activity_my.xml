@@ -40,12 +40,15 @@
         android:layout_centerHorizontal="true">
 
         <Button
+            android:id="@+id/Enable_Acc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="8dp"
-            android:text="Enable\nAcc."/>
+            android:text="Enable\nAcc."
+            />
 
         <Button
+            android:id="@+id/Disable_Acc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"

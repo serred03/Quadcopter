@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -20,6 +22,8 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
     private TextView AileronTextView;
     private TextView ElevatorTextView;
     private UDP_Client client;
+    private Button EnableAcc;
+    private Button DisableAcc;
 
     //Values to be sent to quadcopter
     int TH_value;
@@ -37,6 +41,8 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
     Sensor accelerometer;
     Sensor magnetometer;
 
+    //Activate UDP send.
+    boolean AccEnable = false;
 
 
     @Override
@@ -94,7 +100,19 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
             }
         });
 
+        EnableAcc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AccEnable = true;
+            }
+        });
 
+        DisableAcc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AccEnable = false;
+            }
+        });
 
     }
 
@@ -131,6 +149,8 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
         accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         client = new UDP_Client();
+        EnableAcc = (Button) findViewById(R.id.Enable_Acc);
+        DisableAcc = (Button) findViewById(R.id.Disable_Acc);
     }
 
     @Override
@@ -178,10 +198,18 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
                 String AI_text = "AI_" + Integer.toString(AI_value) + " ";
                 String EL_text = "EL_" + Integer.toString(EL_value);
 
-                String command = AI_text + EL_text;
+                if(AccEnable){
+                    String command = AI_text + EL_text;
 
-                client.Message = command;
-                client.SendData();
+                    client.Message = command;
+                    client.SendData();
+                }else{
+                    String command = "AI_93 EL_93";
+                    client.Message = command;
+                    client.SendData();
+                }
+
+
 
                 AileronTextView.setText(AI_text);
                 ElevatorTextView.setText(EL_text);
@@ -223,7 +251,6 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
         }
 
     }
-
 
 
 }
