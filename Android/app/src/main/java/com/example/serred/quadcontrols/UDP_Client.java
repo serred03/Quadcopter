@@ -25,7 +25,7 @@ public class UDP_Client {
                 try {
                     ds = new DatagramSocket();
                     DatagramPacket dp;
-                    InetAddress IPAddress = InetAddress.getByName("192.168.1.71");
+                    InetAddress IPAddress = InetAddress.getByName("192.168.42.1");
                     dp = new DatagramPacket(Message.getBytes(), Message.length(),IPAddress, 5005);
                     ds.setBroadcast(true);
                     ds.send(dp);

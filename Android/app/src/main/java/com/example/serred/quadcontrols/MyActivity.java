@@ -29,8 +29,8 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
 
     //constants for mapping control values
     int limits = 80; // represents +/-80 on posible values of orientation
-    int arduino_range = 74; //range of orientation values on arduino
-    int arduino_min = 56;   //minimum value on arduino
+    int arduino_range = 75; //range of orientation values on arduino
+    int arduino_min = 55;   //minimum value on arduino
 
     //Orientation sensor initialization
     private SensorManager mSensorManager;
@@ -52,7 +52,9 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 //On progress update TH value.
                 TH_value = mapThrottleValue(i);
-                String th_string = "TH: " + Integer.toString(TH_value);
+                String th_string = "TH_" + Integer.toString(TH_value);
+                client.Message = th_string;
+                client.SendData();
                 ThrottleTextView.setText(th_string);
 
             }
@@ -74,7 +76,9 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 //On progress update RD value.
                 RD_value = mapControlValues(i,true);
-                String rd_string = "RD: " + Integer.toString(RD_value);
+                String rd_string = "RD_" + Integer.toString(RD_value);
+                client.Message = rd_string;
+                client.SendData();
                 RudderTextView.setText(rd_string);
 
             }
@@ -171,10 +175,13 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
                 AI_value = mapControlValues(aileron_value, false);
                 EL_value = mapControlValues(elevator_value, false);
 
-                String AI_text = "AI: " + Integer.toString(AI_value);
-                client.Message = AI_text;
+                String AI_text = "AI_" + Integer.toString(AI_value) + " ";
+                String EL_text = "EL_" + Integer.toString(EL_value);
+
+                String command = AI_text + EL_text;
+
+                client.Message = command;
                 client.SendData();
-                String EL_text = "EL: " + Integer.toString(EL_value);
 
                 AileronTextView.setText(AI_text);
                 ElevatorTextView.setText(EL_text);
@@ -185,7 +192,7 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
 
 
     public int mapThrottleValue(int v){
-        return  v * 72/100+56;
+        return  v * 70/100+58;
     }
 
     public int mapControlValues(float v, boolean isRudder) {
@@ -216,4 +223,7 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
         }
 
     }
+
+
+
 }
