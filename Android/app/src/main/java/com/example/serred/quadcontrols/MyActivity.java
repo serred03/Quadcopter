@@ -57,7 +57,7 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 //On progress update TH value.
-                TH_value = mapThrottleValue(i);
+                TH_value = mapControlValues(i, 't');;
                 String th_string = "TH_" + Integer.toString(TH_value);
                 client.Message = th_string;
                 client.SendData();
@@ -81,7 +81,7 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 //On progress update RD value.
-                RD_value = mapControlValues(i,true);
+                RD_value = mapControlValues(i,'r');
                 String rd_string = "RD_" + Integer.toString(RD_value);
                 client.Message = rd_string;
                 client.SendData();
@@ -192,8 +192,8 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
                 float aileron_value= orientation[1]; // orientation contains: azimut, pitch and roll
                 float elevator_value = orientation[2]; //aileron = roll, elevator = pitch
 
-                AI_value = mapControlValues(aileron_value, false);
-                EL_value = mapControlValues(elevator_value, false);
+                AI_value = mapControlValues(aileron_value, 'a');
+                EL_value = mapControlValues(elevator_value, 'e');
 
                 String AI_text = "AI_" + Integer.toString(AI_value) + " ";
                 String EL_text = "EL_" + Integer.toString(EL_value);
@@ -218,38 +218,43 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
         }
     }
 
-
-    public int mapThrottleValue(int v){
-        return  v * 70/100+58;
-    }
-
-    public int mapControlValues(float v, boolean isRudder) {
+    public int mapControlValues(float v, char channel) {
 
         /*Function converts values from orientation sensors into
         * values that can be processed by the arduino.
         * */
+        int mapped_value = 0;
+        switch(channel) {
 
-        if(isRudder){
-
-            float mapped_value = (v* arduino_range)/(100) + arduino_min;
-
-            return Math.round(mapped_value);
+            case 't'://throttle
+                mapped_value = Math.round(v * 70/100+58);
+                break;
+            case 'a'://aileron
+                v *= -100;
+                if(v < (limits*-1)) {
+                    v = -80;
+                } else if (v > limits) {
+                    v = 80;
+                }
+                mapped_value = Math.round(((v+limits)*arduino_range)/(2*limits) + arduino_min);
+                break;
+            case 'e'://elevator
+                v *= 100;
+                if(v < (limits*-1)) {
+                    v = -80;
+                } else if (v > limits) {
+                    v = 80;
+                }
+                mapped_value = Math.round(((v+limits)*arduino_range)/(2*limits) + arduino_min);
+                break;
+            case 'r'://rudder
+                mapped_value = Math.round((v* arduino_range)/(100) + arduino_min);
+                break;
+            default:
+                break;
         }
-        else{
 
-            v *=100;
-
-            if(v < (limits*-1)) {
-                v = -80;
-            } else if (v > limits) {
-                v = 80;
-            }
-
-            float mapped_value = ((v+limits)*arduino_range)/(2*limits) + arduino_min;
-
-            return Math.round(mapped_value);
-        }
-
+        return mapped_value;
     }
 
 
