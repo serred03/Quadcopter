@@ -25,13 +25,16 @@ int aileron_value = 93; //93 is the middle value.
 int elevator_value = 93; 
 int throttle_value = 96; //59 is idle and 128 is full
 int rudder_value = 93; 
-int aux_value = 93;
+int aux_value = _max;
 int _pwm_value = 0;
 
 unsigned long elapsed_time = 0; //Variables to keep track of last 
 unsigned long last_update = 0; 
 
 String command;
+
+int downward_steps = 5;
+int downward_time = 1000;
 
 void setup()
 {
@@ -56,6 +59,32 @@ void loop()
   
   if(elapsed_time > 3000)
   {
+
+	//This part of the code disables stabilizes
+	//quadrotor in the case of loss of signal 
+	//the value of throttle is reduced
+	//by the value of downward_steps.
+
+	aileron_channel.write(93); //stabilize quadrotor
+	elevator_channel.write(93);
+
+	for(int i=0; i<10; i++)
+	{
+		//reduced throttle value by downward_steps;
+		//every downward_time seconds. 
+ 
+		throttle_value -= downward_steps; 
+		throttle_channel.write(throttle_value);
+
+		delay(downward_time);
+
+		if(Serial.available())
+		{
+	     	   //if there is signal once again 
+		   //break out of loop. 
+			break;
+		}
+	}
   }
 }
 
