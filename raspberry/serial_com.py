@@ -13,7 +13,7 @@ import serial, sys, socket
 args = sys.argv
 
 UDP_PORT = 5005
-UDP_IP = "192.168.1.20"
+UDP_IP = "192.168.42.1"
 
 port = serial.Serial("/dev/ttyAMA0",baudrate=9600,timeout=3.0)
 
