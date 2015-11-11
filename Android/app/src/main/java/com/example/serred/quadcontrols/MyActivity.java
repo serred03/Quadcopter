@@ -239,7 +239,7 @@ public class MyActivity extends ActionBarActivity implements SensorEventListener
                 mapped_value = Math.round(((v+limits)*arduino_range)/(2*limits) + arduino_min);
                 break;
             case 'e'://elevator
-                v *= -100;
+                v *= 100;
                 if(v < (limits*-1)) {
                     v = -80;
                 } else if (v > limits) {
