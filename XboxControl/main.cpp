@@ -26,6 +26,7 @@ using namespace std;
 
 int map_value(int);
 
+
 int resolvehelper(const char* hostname, int family, const char* service, sockaddr_storage* pAddr)
 {
     int result;
@@ -55,16 +56,25 @@ int main(int argc, char* argv[])
 	int throttle_index; 
 	int elevator_index; 
 	int aileron_index; 
+	int aButton_index; 
+	int RTButton_index;
+	int bButton_index;
 
 	string rudder_string; 
 	string throttle_string; 
 	string elevator_string; 
 	string aileron_string; 
+	string aButton_str; 
+	string RTButton_str; 
+	string bButton_str;
 
 	int elevator_value; 
 	int rudder_value; 
 	int throttle_value; 
 	int aileron_value; 
+	int RTButton_val;
+	int aButton_val; 
+	int bButton_val;
 
 	int map_throttle; 
 	int map_rudder; 
@@ -88,7 +98,7 @@ int main(int argc, char* argv[])
 
 
         sockaddr_storage addrDest = {};
-        result = resolvehelper("10.20.6.174", AF_INET, "5005", &addrDest);
+        result = resolvehelper("192.168.42.1", AF_INET, "5005", &addrDest);
         if (result != 0)
         {
            int lasterror = errno;
@@ -116,6 +126,10 @@ int main(int argc, char* argv[])
 		rudder_index = command.find("X1"); 
 		aileron_index = command.find("X2");
 		elevator_index = command.find("Y2");
+		aButton_index = command.find("A");
+		RTButton_index = command.find("RT");
+		bButton_index = command.find("B");
+
 
 		if(throttle_index != -1)
 		{
@@ -157,6 +171,31 @@ int main(int argc, char* argv[])
 			map_aileron = map_value(aileron_value);
 
 			ss << "AI_" << map_aileron<< "\n";
+		}
+
+		if(aButton_index != -1)
+		{
+			if(RTButton_index !=-1)
+			{
+				aButton_str = command.substr(aButton_index+2,3);
+				RTButton_str = command.substr(RTButton_index+3,3);
+				bButton_str = command.substr(bButton_index+2,3);
+				
+				aButton_val = atoi(aButton_str.c_str());
+				RTButton_val = atoi(RTButton_str.c_str()); 
+				bButton_val = atoi(bButton_str.c_str());
+
+				if( (aButton_val > 200) && (RTButton_val > 200))
+				{
+					ss.str("");
+					ss << "ARM\n"; 
+				}else if((bButton_val > 200) && (RTButton_val > 200))
+				{
+					ss.str("");
+					ss << "DRM\n";
+				}
+
+			}
 		}
 
 		
